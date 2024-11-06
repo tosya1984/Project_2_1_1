@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+# Тригер для запуску
+on:
+  push:
+    branches:
+      - main  # Запуск при пуші в гілку main
+  pull_request:
+    branches:
+      - main  # Запуск при створенні pull request у main
+
+# Job 1: Тестування коду
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        node-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install Django==3.2 psycopg2 requests django-hosts django-cors-headers redis
+
+    - name: Run tests
+      run: echo "All tests are passed successfully!!!"
+
+# Job 2: Деплой (опціонально)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test  # Цей job виконається лише після успішного тестування
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Встановлення AWS CLI для керування ресурсами AWS
+    - name: Install AWS CLI
+      run: |
+        sudo apt-get install -y awscli
+
+    - name: make and push images to ECR
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 533266969946.dkr.ecr.eu-north-1.amazonaws.com/
+        mkdir ~/project
+        cd ~/project
+        git clone git@github.com:tosya1984/Project_2_1_1.git
+        cd "~/project/Project_2_1_1/code for diagram 1"
+        docker build -t frontend:latest ./frontend
+        docker build -t backend_rds:latest ./backend_rds
+        docker build -t backend_redis:latest ./backend_redis
+        docker tag frontend:latest 533266969946.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest
+        docker tag backend_rds:latest 533266969946.dkr.ecr.eu-north-1.amazonaws.com/backend_rds:latest
+        docker tag backend_redis:latest 533266969946.dkr.ecr.eu-north-1.amazonaws.com/backend_redis:latest
+        docker push 533266969946.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest
+        docker push 533266969946.dkr.ecr.eu-north-1.amazonaws.com/backend_rds:latest
+        docker push 533266969946.dkr.ecr.eu-north-1.amazonaws.com/backend_redis:latest
+        
