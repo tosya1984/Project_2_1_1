@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  beckend_rds:
+    #image: your-service1-image
+    build:
+      context: ./Dynamic_services_static_front_project/backend_rds
+    ports:
+      - "5000:5000"
+    environment:
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    networks:
+     - project-network
+
+  backend_redis:
+    #image: your-service2-image
+    build:
+      context: ./Dynamic_services_static_front_project/backend_redis
+    ports:
+      - "5001:5001"
+    environment:
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    # depends_on:
+    #  - backend_rds
+    networks:
+     - project-network
+    
+  db_postgres:
+    image: postgres:alpine
+    restart: always
+    shm_size: 128mb
+    environment:
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    build:
+      context: ./Dynamic_services_static_front_project/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - project-network
+
+  db_redis:
+    image: redis:alpine
+    restart: always
+    environment:
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+        # - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: redis-server --requirepass tosya134526
+    build:
+      context: ./Dynamic_services_static_front_project/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - project-network
+
+
+  
+networks:
+  project-network:
+    driver: bridge
+    # external: true
