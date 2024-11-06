@@ -26,12 +26,13 @@ jobs:
           docker build -t frontend:latest ./code\ for\ diagram\ 1/frontend
           docker build -t frontend:latest ./code\ for\ diagram\ 1/backend_rds
           docker build -t frontend:latest ./code\ for\ diagram\ 1/backend_redis
+          docker images
           
       - name: Tag Docker image
         run: |
-          docker tag frontend:latest ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
-          docker tag backend_rds:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
-          docker tag backend_redis:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
+          docker tag ./code\ for\ diagram\ 1/frontend:latest ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
+          docker tag ./code\ for\ diagram\ 1/backend_rds:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
+          docker tag ./code\ for\ diagram\ 1/backend_redis:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
 
       - name: Push Docker image to Amazon ECR
         run: |
