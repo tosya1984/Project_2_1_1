@@ -23,18 +23,20 @@ jobs:
 
       - name: Build Docker image
         run: |
-          pwd
-          ls -la
-          docker --version
-          docker run hello-world
-          # docker build -t my-app:latest .
-
+          docker build -t frontend:latest ./code\ for\ diagram\ 1/frontend
+          docker build -t frontend:latest ./code\ for\ diagram\ 1/backend_rds
+          docker build -t frontend:latest ./code\ for\ diagram\ 1/backend_redis
+          
       - name: Tag Docker image
         run: |
-          # docker tag my-app:latest ${{ secrets.ECR_REPOSITORY_URI }}:latest
+          docker tag frontend:latest ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
+          docker tag backend_rds:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
+          docker tag backend_redis:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
 
       - name: Push Docker image to Amazon ECR
         run: |
-          # docker push ${{ secrets.ECR_REPOSITORY_URI }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
 
         
