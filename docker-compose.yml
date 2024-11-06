@@ -1,12 +1,26 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ~/project/Project_2_1_1/code for diagram 1/frontend
+    ports:
+      - "5005:5005"
+    environment:
+      - BACKEND_RDS_URL=${BACKEND_RDS_URL}
+      - BACKEND_REDIS_URL=${BACKEND_REDIS_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}  
+    networks:
+      - project-network
+
+
   beckend_rds:
     #image: your-service1-image
     build:
-      context: ./Dynamic_services_static_front_project/backend_rds
+      context: ~/project/Project_2_1_1/code for diagram 1/backend_rds
     ports:
-      - "5000:5000"
+      - "8001:8001"
     environment:
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - DB_HOST=${DB_HOST}
@@ -20,9 +34,9 @@ services:
   backend_redis:
     #image: your-service2-image
     build:
-      context: ./Dynamic_services_static_front_project/backend_redis
+      context: ~/project/Project_2_1_1/code for diagram 1/backend_redis
     ports:
-      - "5001:5001"
+      - "8002:8002"
     environment:
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - REDIS_HOST=${REDIS_HOST}
@@ -42,7 +56,7 @@ services:
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build:
-      context: ./Dynamic_services_static_front_project/postgres
+      context: ~/project/Project_2_1_1/code for diagram 1/postgres
     ports:
       - "5432:5432"
     networks:
@@ -59,7 +73,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     command: redis-server --requirepass tosya134526
     build:
-      context: ./Dynamic_services_static_front_project/redis
+      context: ~/project/Project_2_1_1/code for diagram 1/redis
     ports:
       - "6379:6379"
     networks:
