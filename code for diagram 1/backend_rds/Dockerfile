@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 ENV CORS_ALLOWED_ORIGINS="http://localhost,http://127.0.0.1"
-ENV DB_HOST="db_postgres"
+ENV DB_HOST="db-doctor.cjaawu4o67uy.eu-north-1.rds.amazonaws.com"
 ENV DB_PORT=5432
 ENV DB_USER="postgres"
 ENV DB_PASSWORD="tosya134526"
