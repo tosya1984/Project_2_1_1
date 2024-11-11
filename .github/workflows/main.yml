@@ -40,4 +40,9 @@ jobs:
           docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
           docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
 
-        
+      - name: Update ECS Service to Force New Deployment
+        run: |
+          aws ecs update-service \
+            --cluster fargate-test \
+            --service servise-of-free-containers \
+            --force-new-deployment
