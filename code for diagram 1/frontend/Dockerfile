@@ -13,7 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Виставляємо порт, який використовує додаток (якщо потрібно)
-EXPOSE 5005
+EXPOSE 80
+
+ENV BACKEND_RDS_URL="http://localhost:8001/test_connection/"
+ENV BACKEND_REDIS_URL="http://localhost:8002/test_connection/"
 
 # Запускаємо сервіс
-CMD ["python", "manage.py", "runserver", "0.0.0.0:5005"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
