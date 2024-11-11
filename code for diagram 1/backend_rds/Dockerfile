@@ -12,6 +12,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копіюємо увесь код в робочу директорію
 COPY . .
 
+ENV CORS_ALLOWED_ORIGINS="http://localhost,http://127.0.0.1"
+ENV DB_HOST="db_postgres"
+ENV DB_PORT=5432
+ENV DB_USER="postgres"
+ENV DB_PASSWORD="tosya134526"
+ENV DB_NAME="postgres"
+
 # Виставляємо порт, який використовує додаток (якщо потрібно)
 EXPOSE 8001
 
