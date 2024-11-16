@@ -79,7 +79,7 @@ jobs:
 
           # Register New Task Definition
           aws ecs register-task-definition \
-            --task-definition 3containers-private-secondVPC \
+            --task-definition "3containers-private-secondVPC" \
             --cli-input-json file://updated-task-def.json \
             --region ${{ secrets.AWS_REGION }}
 
