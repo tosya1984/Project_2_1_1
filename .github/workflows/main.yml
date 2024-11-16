@@ -29,7 +29,7 @@ jobs:
           docker images
 
       - name: Declare version off images
-        run:
+        run: |
           # declare version majar
           verMaj=1
           # declare version minor
