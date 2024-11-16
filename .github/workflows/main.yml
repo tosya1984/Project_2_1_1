@@ -27,26 +27,61 @@ jobs:
           docker build -t backend_rds:latest ./code\ for\ diagram\ 1/backend_rds
           docker build -t backend_redis:latest ./code\ for\ diagram\ 1/backend_redis
           docker images
+
+      - name: Declare version off images
+        run:
+          # declare version majar
+          verMaj=1
+          # declare version minor
+          verMin=$(git rev-list --count HEAD)
+          # declare full version
+          echo "version=ver$verMaj.$verMin" >> $GITHUB_ENV
           
       - name: Tag Docker image
         run: |
-          docker tag frontend:latest ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
-          docker tag backend_rds:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
-          docker tag backend_redis:latest ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
+
+          docker tag frontend:$ver ${{ secrets.ECR_REPOSITORY_URI }}frontend:$version
+          docker tag backend_rds:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:$version
+          docker tag backend_redis:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:$version
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:latest
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:latest
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:latest
+          # ver=$(git rev-list --count HEAD)
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:$version
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:$version
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:$version
 
       - name: Update ECS Service to Force New Deployment
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          my-task: "3containers-private-secondVPC"
+          cluster: "fargate-test"
+          service: "servise-of-free-containers"
         run: |
+          # Завантажити оригінальний Task Definition
+          aws ecs describe-task-definition \
+            --task-definition $my-task \
+            --region ${{ secrets.AWS_REGION }} > task-def.json
+
+          # Оновити image в контейнері за допомогою yq
+          cat task-def.json
+          yq e ".containerDefinitions[0].image = ${{ secrets.ECR_REPOSITORY_URI }}frontend:$version task-def.json > updated-task-def.json
+          yq e ".containerDefinitions[1].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:$version task-def.json > updated-task-def.json
+          yq e ".containerDefinitions[2].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:$version task-def.json > updated-task-def.json
+          
+          # Вивести оновлений Task Definition
+          cat updated-task-def.json
+
+          # Register New Task Definition
+          aws ecs register-task-definition \
+            --cli-input-json file://updated-task-def.json \
+            --region ${{ secrets.AWS_REGION }}
+
+          # Оновити сервіс
           aws ecs update-service \
-            --cluster fargate-test \
-            --service servise-of-free-containers \
+            --cluster $clustert \
+            --service $service \
             --force-new-deployment
+            --region ${{ secrets.AWS_REGION }}
