@@ -78,11 +78,10 @@ jobs:
           cat updated-task-def.json
 
           # Register New Task Definition
-          aws ecs update-task-definition \
+          aws ecs register-task-definition \
             --task-definition ${{ env.my-task }} \
             --cli-input-json file://updated-task-def.json \
             --region ${{ secrets.AWS_REGION }}
-          # register
 
           # Оновити сервіс
           aws ecs update-service \
