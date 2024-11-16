@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Log in to Amazon ECR
         env:
@@ -57,7 +59,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          my-task: "3containers-private-secondVPC"
+          my-task: "3containers-private-secondVPC:2"
           cluster: "fargate-test"
           service: "servise-of-free-containers"
         run: |
