@@ -40,16 +40,16 @@ jobs:
       - name: Tag Docker image
         run: |
 
-          docker tag frontend:$ver ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.$version
-          docker tag backend_rds:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.$version
-          docker tag backend_redis:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.$version
+          docker tag frontend:$ver ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}
+          docker tag backend_rds:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}
+          docker tag backend_redis:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}
 
       - name: Push Docker image to Amazon ECR
         run: |
           # ver=$(git rev-list --count HEAD)
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.$version
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.$version
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.$version
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}
 
       - name: Update ECS Service to Force New Deployment
         env:
@@ -67,9 +67,9 @@ jobs:
 
           # Оновити image в контейнері за допомогою yq
           cat task-def.json
-          yq e ".containerDefinitions[0].image = ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.$version task-def.json > updated-task-def.json
-          yq e ".containerDefinitions[1].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.$version task-def.json > updated-task-def.json
-          yq e ".containerDefinitions[2].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.$version task-def.json > updated-task-def.json
+          yq e ".containerDefinitions[0].image = ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }} task-def.json > updated-task-def.json
+          yq e ".containerDefinitions[1].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }} task-def.json > updated-task-def.json
+          yq e ".containerDefinitions[2].image = ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }} task-def.json > updated-task-def.json
           
           # Вивести оновлений Task Definition
           cat updated-task-def.json
