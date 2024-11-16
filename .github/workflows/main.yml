@@ -65,7 +65,7 @@ jobs:
         run: |
           # Завантажити оригінальний Task Definition
           aws ecs describe-task-definition \
-            --task-definition $my-task \
+            --task-definition ${{ env.my-task }} \
             --region ${{ secrets.AWS_REGION }} > task-def.json
 
           # Оновити image в контейнері за допомогою yq
