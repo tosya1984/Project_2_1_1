@@ -21,13 +21,6 @@ jobs:
         run: |
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t frontend:latest ./code\ for\ diagram\ 1/frontend
-          docker build -t backend_rds:latest ./code\ for\ diagram\ 1/backend_rds
-          docker build -t backend_redis:latest ./code\ for\ diagram\ 1/backend_redis
-          docker images
-
       - name: Declare version off images
         run: |
           # declare version majar
@@ -37,12 +30,20 @@ jobs:
           # declare full version
           echo "version=$verMaj.$verMin" >> $GITHUB_ENV
           
+      - name: Build Docker image
+        run: |
+          docker build -t frontend:ver.${{ env.version }} ./code\ for\ diagram\ 1/frontend
+          docker build -t backend_rds:ver.${{ env.version }} ./code\ for\ diagram\ 1/backend_rds
+          docker build -t backend_redis:ver.${{ env.version }} ./code\ for\ diagram\ 1/backend_redis
+          docker images
+
+          
       - name: Tag Docker image
         run: |
 
-          docker tag frontend:$ver ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}
-          docker tag backend_rds:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}
-          docker tag backend_redis:$ver ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}
+          docker tag frontend:ver.${{ env.version }} ${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}
+          docker tag backend_rds:ver.${{ env.version }} ${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}
+          docker tag backend_redis:ver.${{ env.version }} ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}
 
       - name: Push Docker image to Amazon ECR
         run: |
