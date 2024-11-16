@@ -79,7 +79,7 @@ jobs:
 
           # Register New Task Definition
           aws ecs register-task-definition \
-            --task-definition ${{ env.my-task }} \
+            # --task-definition ${{ env.my-task }} \
             --cli-input-json updated-task-def.json \
             --region ${{ secrets.AWS_REGION }}
               # file://
@@ -88,5 +88,7 @@ jobs:
           aws ecs update-service \
             --cluster ${{ env.cluster }} \
             --service ${{ env.service }} \
+            --task-definition ${{ env.my-task }} \
+            --region ${{ secrets.AWS_REGION }} \
             --force-new-deployment
-            --region ${{ secrets.AWS_REGION }}
+            
