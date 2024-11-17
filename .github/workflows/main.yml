@@ -83,6 +83,7 @@ jobs:
 
           # Register New Task Definition
           aws ecs register-task-definition \
+            --family ${{ env.my-task }}
             --cli-input-json file://updated-task-def.json
 
     
