@@ -85,28 +85,28 @@ jobs:
 
           # Register New Task Definition
           aws ecs register-task-definition \
-            --family ${{ env.my-task }}
+            --family ${{ env.my-task }} \
             --cli-input-json file://updated-task-def.json
-            --container-definitions '[
-                {
-                  "name": "frontend",
-                  "image": "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}",
-                  "memory": 922,
-                  "cpu": 307
-                },
-                {
-                  "name": "backend_rds",
-                  "image": "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}",
-                  "memory": 922,
-                  "cpu": 307
-                },
-                {
-                  "name": "backend_redis",
-                  "image": "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}",
-                  "memory": 922,
-                  "cpu": 307
-                }
-              ]'
+            # --container-definitions '[
+            #     {
+            #       "name": "frontend",
+            #       "image": "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}",
+            #       "memory": 922,
+            #       "cpu": 307
+            #     },
+            #     {
+            #       "name": "backend_rds",
+            #       "image": "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}",
+            #       "memory": 922,
+            #       "cpu": 307
+            #     },
+            #     {
+            #       "name": "backend_redis",
+            #       "image": "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}",
+            #       "memory": 922,
+            #       "cpu": 307
+            #     }
+            #   ]'
 
     
           echo "last step"
