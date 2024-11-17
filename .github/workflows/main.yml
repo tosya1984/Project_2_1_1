@@ -73,13 +73,15 @@ jobs:
           yq e '.taskDefinition.containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}" |
                 .taskDefinition.containerDefinitions[1].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}" |
                 .taskDefinition.containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}"' \
-          task-def.json > updated-task-def.json          
+          task-def.json > updated-task-def.json   
+          
           # Вивести оновлений Task Definition
           cat updated-task-def.json
 
+          # Debug variables
           echo "2 step lasts"
-          jq . updated-task-def.json
-
+          env
+          ls -la
 
           # Register New Task Definition
           aws ecs register-task-definition \
