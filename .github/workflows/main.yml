@@ -81,8 +81,10 @@ jobs:
           aws ecs register-task-definition \
             # --task-definition ${{ env.my-task }} \
             --cli-input-json updated-task-def.json \
-            --region ${{ secrets.AWS_REGION }}
+            # --region ${{ secrets.AWS_REGION }}
               # file://
+              
+          echo "last step"
               
           # Оновити сервіс
           aws ecs update-service \
