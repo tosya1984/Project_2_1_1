@@ -70,10 +70,18 @@ jobs:
 
           # Оновити image в контейнері за допомогою yq
           cat task-def.json
-          yq e '.taskDefinition.containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}" |
-                .taskDefinition.containerDefinitions[1].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}" |
-                .taskDefinition.containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}" |
-                .taskDefinition' task-def.json > updated-task-def.json   
+
+          yq e '.taskDefinition |
+            .containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}" |
+            .containerDefinitions[1].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}" |
+            .containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}" |
+            del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
+            task-def.json > updated-task-def.json
+          
+          # yq e '.taskDefinition.containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}" |
+          #       .taskDefinition.containerDefinitions[1].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}" |
+          #       .taskDefinition.containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}" |
+          #       .taskDefinition' task-def.json > updated-task-def.json   
           
           # Вивести оновлений Task Definition
           cat updated-task-def.json
