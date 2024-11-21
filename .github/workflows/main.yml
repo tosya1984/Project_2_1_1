@@ -72,6 +72,7 @@ jobs:
           cat task-def.json
 
           yq e '.taskDefinition |
+            .family = "3containers-private-secondVPC:2" |
             .containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:ver.${{ env.version }}" |
             .containerDefinitions[1].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_rds:ver.${{ env.version }}" |
             .containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:ver.${{ env.version }}" |
