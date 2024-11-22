@@ -7,7 +7,7 @@ on:
     paths:
       - 'code for diagram 1/backend_redis/**'
   workflow_run:
-    workflows: ["Backend_redis Make build"]
+    workflows: ["redis_main"]
     types:
       - completed
 

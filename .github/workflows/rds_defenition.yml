@@ -7,7 +7,7 @@ on:
     paths:
       - 'code for diagram 1/backend_rds/**'
   workflow_run:
-    workflows: ["Backend_rds Make build"]
+    workflows: ["rds_main"]
     types:
       - completed
 

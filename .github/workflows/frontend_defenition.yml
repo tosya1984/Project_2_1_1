@@ -7,7 +7,7 @@ on:
     paths:
       - 'code for diagram 1/frontend/**'
   workflow_run:
-    workflows: ["Frontend Make build"]
+    workflows: ["frontend_main"]
     types:
       - completed
 
