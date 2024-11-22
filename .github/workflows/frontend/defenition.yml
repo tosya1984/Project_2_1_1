@@ -1,13 +1,13 @@
-name: Change defenition
+name: Frontend Change defenition
 
 on:
   push:
     branches:
       - main
     paths:
-      - frontend/**
+      - ./code\ for\ diagram\ 1/frontend**
   workflow_run:
-    workflows: ["Make build"]
+    workflows: ["Frontend Make build"]
     types:
       - completed
 

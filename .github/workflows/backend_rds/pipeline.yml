@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - backend_rds/**
+      - ./code\ for\ diagram\ 1/backend_rds/**
 
 jobs:
   deploy:

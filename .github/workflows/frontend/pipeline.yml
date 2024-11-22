@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - frontend/**
+      - ./code\ for\ diagram\ 1/frontend**
 
 jobs:
   deploy:
