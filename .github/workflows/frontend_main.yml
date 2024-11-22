@@ -17,12 +17,12 @@ jobs:
 
       - name: Build Docker image
         run:
-          docker build -t frontend:${{ GITHUB_SHA }} ./code\ for\ diagram\ 1/frontend
+          docker build -t frontend:${{ github.sha }} ./code\ for\ diagram\ 1/frontend
 
 
       - name: Tag Docker image
         run:
-          docker tag frontend:${{ GITHUB_SHA }} ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ GITHUB_SHA }}
+          docker tag frontend:${{ github.sha }} ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ github.sha }}
 
       - name: Log in to Amazon ECR
         env:
@@ -34,4 +34,4 @@ jobs:
 
       - name: Push Docker image to Amazon ECR
         run:
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ GITHUB_SHA }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ github.sha }}

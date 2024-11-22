@@ -37,7 +37,7 @@ jobs:
           cat task-def.json
 
           yq e '.taskDefinition |
-            .containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ GITHUB_SHA }}" |
+            .containerDefinitions[2].image = "${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ github.sha }}" |
             del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
             task-def.json > updated-task-def.json
           

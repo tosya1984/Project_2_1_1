@@ -17,12 +17,12 @@ jobs:
 
       - name: Build Docker image
         run:
-          docker build -t backend_redis:${{ GITHUB_SHA }} ./code\ for\ diagram\ 1/backend_redis
+          docker build -t backend_redis:${{ github.sha }} ./code\ for\ diagram\ 1/backend_redis
 
 
       - name: Tag Docker image
         run:
-          docker tag backend_redis:${{ GITHUB_SHA }} ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ GITHUB_SHA }}
+          docker tag backend_redis:${{ github.sha }} ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ github.sha }}
 
       - name: Log in to Amazon ECR
         env:
@@ -34,4 +34,4 @@ jobs:
 
       - name: Push Docker image to Amazon ECR
         run:
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ GITHUB_SHA }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}backend_redis:${{ github.sha }}

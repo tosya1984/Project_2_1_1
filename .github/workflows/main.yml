@@ -18,3 +18,4 @@ jobs:
         run:
           echo "frontend was changed!"
           echo "hello world!"
+          echo ${{ github.sha }}
