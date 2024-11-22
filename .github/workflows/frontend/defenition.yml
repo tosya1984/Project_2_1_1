@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ./code\ for\ diagram\ 1/frontend**
+      - './code\ for\ diagram\ 1/frontend/**'
   workflow_run:
     workflows: ["Frontend Make build"]
     types:
