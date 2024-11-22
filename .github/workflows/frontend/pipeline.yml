@@ -1,0 +1,37 @@
+name: Frontend Make build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run:
+          docker build -t frontend:${{ GITHUB_SHA }} ./code\ for\ diagram\ 1/frontend
+
+
+      - name: Tag Docker image
+        run:
+          docker tag frontend:${{ GITHUB_SHA }} ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ GITHUB_SHA }}
+
+      - name: Log in to Amazon ECR
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
+
+      - name: Push Docker image to Amazon ECR
+        run:
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ GITHUB_SHA }}

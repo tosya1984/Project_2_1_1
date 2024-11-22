@@ -1,0 +1,57 @@
+name: Change defenition
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+  workflow_run:
+    workflows: ["Make build"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update ECS Service to Force New Deployment
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          my-task: "3containers-private-secondVPC"
+          cluster: "fargate-test"
+          service: "servise-of-free-containers"
+        run: |
+          # Завантажити оригінальний Task Definition
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.my-task }} \
+            --region ${{ secrets.AWS_REGION }} > task-def.json
+
+          # Оновити image в контейнері за допомогою yq
+          cat task-def.json
+
+          yq e '.taskDefinition |
+            .containerDefinitions[0].image = "${{ secrets.ECR_REPOSITORY_URI }}frontend:${{ GITHUB_SHA }}" |
+            del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
+            task-def.json > updated-task-def.json
+          
+          # Вивести оновлений Task Definition
+          cat updated-task-def.json
+
+          # Register New Task Definition
+          aws ecs register-task-definition \
+            --cli-input-json file://updated-task-def.json
+           
+          # Оновити сервіс
+          aws ecs update-service \
+            --cluster ${{ env.cluster }} \
+            --service ${{ env.service }} \
+            --task-definition ${{ env.my-task }} \
+            --region ${{ secrets.AWS_REGION }} \
+            --force-new-deployment
