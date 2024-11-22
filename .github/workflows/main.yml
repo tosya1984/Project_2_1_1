@@ -1,0 +1,20 @@
+name: Main pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'code for diagram 1/frontend/**'
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: say hello
+        run:
+          echo "frontend was changed!"
+          echo "hello world!"
