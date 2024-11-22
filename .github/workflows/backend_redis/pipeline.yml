@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - './code\ for\ diagram\ 1/backend_redis/**'
+      - 'code\ for\ diagram\ 1/backend_redis/**'
 
 jobs:
   deploy:

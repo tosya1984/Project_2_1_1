@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - './code\ for\ diagram\ 1/backend_redis/**'
+      - 'code\ for\ diagram\ 1/backend_redis/**'
   workflow_run:
     workflows: ["Backend_redis Make build"]
     types:
